@@ -1,0 +1,20 @@
+14:30:30.311 [main] INFO  com.artoftesting.pages.SauceDemoLoginPage - Logging with username - standard_user  and password - secret_sauce
+14:30:31.293 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - expectedProductLabel-Products and actualProductLabel - Products
+12:19:44.146 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:19:44.175 [main] INFO  com.artoftesting.pages.SauceDemoLoginPage - Logging with username - standard_user  and password - secret_sauce
+12:19:45.516 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - expectedProductLabel-Products and actualProductLabel - Products
+08:19:17.110 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+08:20:06.186 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+09:50:50.822 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+09:58:07.036 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+10:02:12.966 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+11:06:41.093 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:01:52.064 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:42:23.359 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:44:28.931 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:47:00.446 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:50:13.987 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+12:56:55.068 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+13:03:16.434 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+13:06:11.745 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
+17:26:06.610 [main] INFO  com.artoftesting.test.SauceDemoLoginTest - Verifying successful login.
