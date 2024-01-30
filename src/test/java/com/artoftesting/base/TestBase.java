@@ -5,11 +5,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +27,11 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import org.apache.commons.io.FileUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 
@@ -40,6 +48,16 @@ public class TestBase {
 	protected static WebDriver driver;
 	public static Properties envConfig;
 	WebDriverWait wait;
+	public static ExtentReports extentReport ;
+	public static ExtentSparkReporter htmlReporter ;
+	public static ExtentTest testcase ;
+	
+	TestDetail tc ;
+	ArrayList<String> Logs = new ArrayList<>();
+	ArrayList<String> ss_paths = new ArrayList<>();
+	String SS_Path;
+
+	
 	
 	
 	//Environment value fetched from POM with 'careersIn' and 'production' being the valid values 
@@ -84,44 +102,146 @@ public class TestBase {
 		wait = new WebDriverWait(driver, 20);
 
 		//Environment specific properties file loading
-		System.out.println(System.getProperty("user.dir"));
+		
 		InputStream configFile = new FileInputStream(System.getProperty("user.dir") + 
 				"\\src\\test\\java\\com\\artoftesting\\config\\" + ENV +  ".properties");		 
 		envConfig = new Properties();
 		envConfig.load(configFile);
+		
+		extentReport = new ExtentReports();
+		htmlReporter = new  ExtentSparkReporter("./CEPT.html");
+		extentReport.attachReporter(htmlReporter);
+		
+		 String folderPath = "/booking/logs";
+
+	        // Create a File object for the folder
+	        File folder = new File(folderPath);
+
+	        // Check if the folder exists
+	        if (folder.exists()) {
+	            // Delete the folder and its contents
+	            deleteFolder(folder);
+	            System.out.println("Folder deleted successfully.");
+	        } else {
+	            System.out.println("Folder does not exist.");
+	        }
 	
 	}
+   
+    
+    
+    	
+    
 
 	
 	@BeforeMethod()
     public void loadBaseUrl(Method method) {
         driver.get(envConfig.getProperty("baseUrl"));
         
+    	tc = method.getAnnotation(TestDetail.class);
+    	
+    	try {
+    		testcase= extentReport.createTest(tc.testCaseName());
+    	}
+    	catch(NullPointerException e)
+    	{
+    		System.out.println("null");
+    	}
+        testcase.assignAuthor(tc.author());
+        testcase.assignCategory(tc.category());
+        System.out.println(testcase.getModel().getFullName());
+        System.out.println(testcase.getModel().getCategorySet());
+        
     }
  
 
 	@AfterMethod
-	public void screenshotAndDeleteCookies(ITestResult testResult) throws IOException {
+	public void screenshotAndDeleteCookies(ITestResult testResult ,Method method) throws IOException {
+		
+		String path;
+		
+       ;
 		//Taking screenshot in case of failure
+		
+		System.out.println(Logs.size());
+		
+//		switch(testResult.getStatus())
+//		{
+//		
+//		case ITestResult.SUCCESS:
+//			for(int i=0;i<Logs.size();i++)
+//			{	
+//				testcase.pass(Logs.get(i),MediaEntityBuilder.createScreenCaptureFromPath(ss_paths.get(i)).build());
+//			
+//			}
+//			
+//			break;
+//		case ITestResult.FAILURE:
+//			for(int i=0;i<Logs.size();i++)
+//			{
+//			testcase.fail(Logs.get(i),MediaEntityBuilder.createScreenCaptureFromPath(ss_paths.get(i)).build());
+//			
+//			}break;
+//		}
+//	  
+		for(int i=0;i<Logs.size();i++)
+		{	
+			testcase.pass(Logs.get(i),MediaEntityBuilder.createScreenCaptureFromPath(ss_paths.get(i)).build());
+		
+		}
 		if(testResult.getStatus() == ITestResult.FAILURE){
 			File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(scrFile, new File("errorScreenshots\\" + testResult.getName() + "-" 
-					+ Arrays.toString(testResult.getParameters()) +  ".jpg"));	
+					+ Arrays.toString(testResult.getParameters()) +  ".png"));	
+			path ="errorScreenshots\\" + testResult.getName() + "-" 
+					+ Arrays.toString(testResult.getParameters()) +  ".png";
+			
+			testcase.fail("fail",MediaEntityBuilder.createScreenCaptureFromPath(path).build());
 			}
-		else
-		{
-			File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(scrFile, new File("PassScreenshot\\" + testResult.getName() + "-" 
-					+ Arrays.toString(testResult.getParameters()) +  ".jpg"));
-		}
-		//Deleting cookies
-		driver.manage().deleteAllCookies();
+
+		
 	}
  
-
+     public void Screenshot(String log) 
+   {
+    	
+    	 File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			try {
+				FileUtils.copyFile(scrFile, new File("logs\\" +log
+						 +".png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			SS_Path ="logs\\"+ log +".png";
+			
+	Logs.add(log);
+	ss_paths.add(SS_Path);
+   
+   }
+     
+    
     @AfterSuite
     public void suiteTearDown() {
+    	extentReport.flush();
     	driver.quit();
+    }
+    
+    public static void deleteFolder(File folder) {
+        if (folder.isDirectory()) {
+            // List all files and subdirectories in the folder
+            File[] files = folder.listFiles();
+
+            if (files != null) {
+                for (File file : files) {
+                    // Recursively delete files and subdirectories
+                    deleteFolder(file);
+                }
+            }
+        }
+
+        // Delete the folder itself
+        folder.delete();
     }
 
 }
