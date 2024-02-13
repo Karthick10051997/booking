@@ -1,52 +1,60 @@
 package com.artoftesting.test;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.Reporter;
+
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.artoftesting.base.TestBase;
 import com.artoftesting.base.TestDetail;
 import com.artoftesting.pages.BookingPage;
 import com.artoftesting.pages.LoginPage;
+import com.artoftesting.util.ExcelUtil;
 
 
 public class BookingLoginTest extends TestBase {
 
-//	LoginPage loginPage;
+	LoginPage loginPage;
 	BookingPage bookingpage;
 	//Log4j configuration
 	
 	
-	@TestDetail(testCaseID ="TC_001",
+	@TestDetail(testCaseID ="TC001",
 			testCaseName ="Booking_Register_Mail",
-			author ="karthick",
+			author ="Karthick",
 			    module ="Booking",
-			    category = "sanity"
+			    category = "SANITY"
 			)
-	@Test(groups ="sanity")
+	@Test(groups ="SANITY")
 	
-	public void bookingservice() throws InterruptedException
+	public void bookingservice() throws Exception
 	{
-		System.out.println("testlogin");
-		Screenshot("Login");
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.enterUsername();
-		loginPage.enterPassword();
-		loginPage.clickSignIn();
-		Screenshot("Login successful");
+		
+//		loginPage = new LoginPage(driver);
+//		loginPage.enterUsername();
+//		loginPage.enterPassword();
+//		loginPage.clickSignIn();
+//		Screenshot("clickSignIn", 0);
 		bookingpage = new BookingPage(driver);
-		bookingpage.clickBookingModuleTab();
-		bookingpage.clickBookingModuleOption();
-		bookingpage.clickMailBookingOption();
-		bookingpage.clickDomesticMailBookingOption();
-		//bookingpage.enterOriginPincode("600019");
-		bookingpage.enterDestinationPincode("600119");
-		bookingpage.enterPhysicalWeight("100");
-		bookingpage.clickSearchServicesButton();
-		bookingpage.VerifyAvailableServices();
-		Screenshot("Validating");
-	}
+//		bookingpage.moveToBookingTab();
+//		bookingpage.clickBooking();
+  //   	bookingpage.clickMailBooking();
+		bookingpage.clickDomesticMailBooking();
+		bookingpage.clearOriginPincode();
+		bookingpage.enterDestinationPincode();
+		bookingpage.enterBOName();
+		bookingpage.enterphysicalwt();
+		bookingpage.selectbookingtype();
+		bookingpage.selectmailservicetype();
+		bookingpage.clickpriority();
+		bookingpage.selectmailshape();
+		bookingpage.enterradius();
+		bookingpage.enterheight(
+				);
+		Thread.sleep(2000);
+		bookingpage.clickcalculate();
+		Thread.sleep(2000);
+		bookingpage.clicknext();
+		//Thread.sleep(2000);
 	
-
+	}
 }
